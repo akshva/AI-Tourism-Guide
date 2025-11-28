@@ -293,7 +293,7 @@ export default function ItineraryDetail() {
                             key={index}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                           >
-                            <span className="text-gray-700">{collabData?.name || collabData?.email || 'Collaborator'}</span>
+                            <span className="text-gray-700">{(collabData as any)?.name || (collabData as any)?.email || 'Collaborator'}</span>
                             {isOwner && (
                               <button
                                 onClick={() => handleRemoveCollaborator(

@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+import { authOptions } from '../../auth/[...nextauth]';
 import dbConnect from '@/lib/mongodb';
 import Itinerary from '@/models/Itinerary';
 import User from '@/models/User';
+import mongoose from 'mongoose';
 
 export default async function handler(
   req: NextApiRequest,
@@ -46,11 +47,11 @@ export default async function handler(
         return res.status(400).json({ message: 'You cannot add yourself as a collaborator' });
       }
 
-      if (itinerary.collaborators.includes(collaborator._id)) {
+      if (itinerary.collaborators.some((id) => id.toString() === collaborator._id.toString())) {
         return res.status(400).json({ message: 'User is already a collaborator' });
       }
 
-      itinerary.collaborators.push(collaborator._id);
+      itinerary.collaborators.push(new mongoose.Types.ObjectId(collaborator._id));
       await itinerary.save();
 
       const updatedItinerary = await Itinerary.findById(id)
