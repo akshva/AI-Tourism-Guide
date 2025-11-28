@@ -11,7 +11,13 @@ export interface IUser {
   updatedAt?: Date;
 }
 
-const UserSchema = new Schema<IUser>(
+export interface IUserMethods {
+  comparePassword(enteredPassword: string): Promise<boolean>;
+}
+
+type UserModel = Model<IUser, {}, IUserMethods>;
+
+const UserSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     name: {
       type: String,
@@ -51,7 +57,6 @@ UserSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+const User: UserModel = (mongoose.models.User as UserModel) || mongoose.model<IUser, UserModel>('User', UserSchema);
 
 export default User;
-
