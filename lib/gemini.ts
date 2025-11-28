@@ -3,7 +3,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const API_KEY = process.env.GEMINI_API_KEY!;
 
 if (!API_KEY) {
-  throw new Error('Please define the GEMINI_API_KEY environment variable inside .env.local');
+  const isVercel = process.env.VERCEL === '1';
+  const errorMessage = isVercel
+    ? 'GEMINI_API_KEY is not set. Please add it in your Vercel project settings: Settings → Environment Variables → Add GEMINI_API_KEY'
+    : 'Please define the GEMINI_API_KEY environment variable inside .env.local';
+  throw new Error(errorMessage);
 }
 
 const genAI = new GoogleGenerativeAI(API_KEY);
@@ -141,7 +145,11 @@ Make the itinerary detailed, practical, and well-organized. Include specific tim
     
     // Provide more helpful error messages
     if (error.message?.toLowerCase().includes('api key') || error.message?.toLowerCase().includes('api_key')) {
-      throw new Error('Invalid API key. Please check your GEMINI_API_KEY environment variable in .env.local');
+      const isVercel = process.env.VERCEL === '1';
+      const errorMessage = isVercel
+        ? 'Invalid API key. Please check your GEMINI_API_KEY in Vercel project settings: Settings → Environment Variables. Make sure it\'s set for Production, Preview, and Development environments.'
+        : 'Invalid API key. Please check your GEMINI_API_KEY environment variable in .env.local';
+      throw new Error(errorMessage);
     }
     if (error.message?.toLowerCase().includes('quota') || error.message?.toLowerCase().includes('limit') || error.message?.toLowerCase().includes('rate')) {
       throw new Error('API quota or rate limit exceeded. This can happen if:\n1. You\'ve used your free tier limit for today\n2. Too many requests were made quickly\n3. Your API key has usage restrictions\n\nSolutions:\n- Wait a few minutes and try again\n- Check your Google Cloud Console for quota limits\n- Verify your API key has the Gemini API enabled\n- Consider upgrading your API plan if needed');

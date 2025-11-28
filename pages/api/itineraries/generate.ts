@@ -142,7 +142,12 @@ export default async function handler(
       
       // Add helpful hints for common errors
       if (error.message.includes('API key') || error.message.includes('GEMINI_API_KEY')) {
-        errorMessage += ' Please check your GEMINI_API_KEY in .env.local';
+        const isVercel = process.env.VERCEL === '1';
+        if (isVercel) {
+          errorMessage += ' Please check your GEMINI_API_KEY in Vercel project settings: Settings → Environment Variables. Make sure it\'s set for all environments (Production, Preview, Development).';
+        } else {
+          errorMessage += ' Please check your GEMINI_API_KEY in .env.local';
+        }
       } else if (error.message.includes('MongoDB') || error.message.includes('database')) {
         errorMessage += ' Please check your MONGODB_URI in .env.local';
       } else if (error.message.includes('parse') || error.message.includes('JSON')) {
