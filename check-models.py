@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 # --- PASTE YOUR API KEY HERE ---
-genai.configure(api_key="AIzaSyAuPv8NFDqT7blrZZeZOYOXTF_1DYyKoYA") 
+genai.configure(api_key="") 
 
 print("Available models that support 'generateContent':")
 
